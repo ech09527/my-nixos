@@ -46,6 +46,24 @@
     };
   };
 
+  # uv / pip 国内镜像（环境变量兜底，uv.toml / pip.conf 为主配置）
+  environment.variables = {
+    UV_DEFAULT_INDEX = "https://pypi.tuna.tsinghua.edu.cn/simple";
+    UV_PYTHON_INSTALL_MIRROR = "https://mirror.nju.edu.cn/github-release/astral-sh/python-build-standalone/";
+    PIP_INDEX_URL = "https://pypi.tuna.tsinghua.edu.cn/simple";
+  };
+
+  environment.etc."pip.conf".text = ''
+    [global]
+    index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+    trusted-host = pypi.tuna.tsinghua.edu.cn
+  '';
+
+  systemd.tmpfiles.rules = [
+    "d /root/.config/uv 0755 root root -"
+    "L+ /root/.config/uv/uv.toml - - - - ${./config/uv.toml}"
+  ];
+
   # 1. 安装 Vim 软件包
   environment.systemPackages = with pkgs; [
     vim
@@ -57,6 +75,8 @@
     restic
     cursor-cli
     tea
+    uv
+    curl
   ];
 
   virtualisation.podman = {
