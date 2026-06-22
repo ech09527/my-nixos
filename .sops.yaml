@@ -1,4 +1,0 @@
-creation_rules:
-  - path_regex: "secrets/.*"
-    age:
-      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKjIUmCZMoFpISQLWn//iTml8JWzTr7o4kVgJSG2I8RJ root@nixos"
