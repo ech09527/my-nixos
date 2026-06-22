@@ -15,7 +15,7 @@
         ./configuration.nix
 
         # 2. 提示：通常你还需要引入硬件配置文件，否则系统可能无法正常引导
-        # ./hardware-configuration.nix 
+        # ./hardware-configuration.nix
       ];
     };
   };

@@ -1,5 +1,25 @@
 { config, pkgs, lib, ... }:
 
+let
+  nvm = pkgs.stdenvNoCC.mkDerivation rec {
+    pname = "nvm";
+    version = "0.40.3";
+    src = pkgs.fetchFromGitHub {
+      owner = "nvm-sh";
+      repo = "nvm";
+      rev = "v${version}";
+      hash = "sha256-s36EQojnNKm4x410nllC3nbnzzwcLZCKSP3DkJPpjjo=";
+    };
+    dontConfigure = true;
+    dontBuild = true;
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/share/nvm
+      cp -r $src/* $out/share/nvm/
+      runHook postInstall
+    '';
+  };
+in
 {
 
    programs.nix-ld.enable = true;
@@ -46,11 +66,14 @@
     };
   };
 
-  # uv / pip 国内镜像（环境变量兜底，uv.toml / pip.conf 为主配置）
+  # uv / pip / npm / nvm 国内镜像（环境变量兜底，配置文件为主）
   environment.variables = {
     UV_DEFAULT_INDEX = "https://pypi.tuna.tsinghua.edu.cn/simple";
     UV_PYTHON_INSTALL_MIRROR = "https://mirror.nju.edu.cn/github-release/astral-sh/python-build-standalone/";
     PIP_INDEX_URL = "https://pypi.tuna.tsinghua.edu.cn/simple";
+    NPM_CONFIG_REGISTRY = "https://registry.npmmirror.com";
+    NVM_DIR = "/root/.nvm";
+    NVM_NODEJS_ORG_MIRROR = "https://npmmirror.com/mirrors/node";
   };
 
   environment.etc."pip.conf".text = ''
@@ -59,9 +82,19 @@
     trusted-host = pypi.tuna.tsinghua.edu.cn
   '';
 
+  environment.etc."bashrc.local".text = ''
+    export NVM_DIR="/root/.nvm"
+    export NVM_NODEJS_ORG_MIRROR="https://npmmirror.com/mirrors/node"
+    if [ -s "${nvm}/share/nvm/nvm.sh" ]; then
+      . "${nvm}/share/nvm/nvm.sh"
+    fi
+  '';
+
   systemd.tmpfiles.rules = [
     "d /root/.config/uv 0755 root root -"
     "L+ /root/.config/uv/uv.toml - - - - ${./config/uv.toml}"
+    "f /root/.npmrc 0644 root root - registry=https://registry.npmmirror.com"
+    "d /root/.nvm 0755 root root -"
   ];
 
   # 1. 安装 Vim 软件包
@@ -76,6 +109,8 @@
     cursor-cli
     tea
     uv
+    nvm
+    codex
     curl
   ];
 
