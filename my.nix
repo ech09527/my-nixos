@@ -37,11 +37,13 @@ in
   nixpkgs.config.allowUnfree = true;
 
   users.users.root = {
-
+     initialHashedPassword = lib.mkForce null;
      hashedPassword = "$6$AtoFoSGUt8LQtRwj$Fe8tUWma2D6GUWlR5a7.pAa/wI6OW62wSIzYRpQOouPxNFJeixwyOqesntn4TRGE6WFmB3VpH8Ma7Yuc5UPOA0";
   # 在这里配置 SSH 公钥
     openssh.authorizedKeys.keys = [
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYam+IxrgQ48DBG0zJpBUhtDRr/h0xmiwRQW0AnDe1krT+JQv1iAd9HJIuo4eSBQeViifhtlMO6IRWNwKSFHnQs/ZUpycTHrim0cdkTE2KnIcl+LX8hVwVmx+iVJgSef94QwxeBSGpq+p6UZgOHQkMbOGvqC+yRxcNxhY+wU7+sixUq2HQc7+MFfnirFQvMbEZw0lEMHa/IcQWZwjgcRhgeuELFTVFO68DL1JkrW0g5oUGXIqOqj5zxW0yrSFGNcZaoeovwDNgJQjzGGZQM8KXFBGsvSOWmVcC1xbEamWitmqvcGsSVHgXRqpi6InKqM3TDrTJc5zJvj/f0NP9d41cilggtZlaRDtHO2KJ/aWb68DCi9B7yey1KiJMonMQClPdsUvB4F/M5hMoJNt0fB/CRsjRxHldx5wHejt2A51nMatXoxsakmSZk3B1+sjMjfp9gYrPn2NxZBxH/HsBKx36BdKQsyZw4FZp8KzAL2v38z621661PPaG6H1avpNxKEc="
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvTB/TkQgqfrUEIYdpgZd13icD4oHkkzXa4T23SPTgN8z542JfKyqoWf51juWg8+n08oN2lEoj3Mv/vvAcaoRvQ6/04/Pezs7JICf+0EkPI6KDRMjxsm+RFPn5p1wt2L+mtf2CW4jxaYyniiCGKM79SJZ9wM++BOVY8WTJAbHi0C45kwhfvA4X4dlS9Ukm1YcvHAMqyK1vowZ0AeA1pCFenqVThjpj/gdEWGXgxSyrd3HNlXpdbGctVPQYred53oUNzPyDo+d+LivBBvZ2IFyf+v+kG9qiz+Hr735JDkU99TGIRL2Xw6OU2dsDyKIAg8piR0qyDHvAdazpvWs+VWdp admin@win10ltsc"
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFGgkAcYZEIEK1qWBgiWY1nNdN2yEHuRV4Eb4qoJn4O5kaNjLCyK2891brP6emI9Ae9dWLZ1/RTAnn3+jG0PqRqPULIIlXNfA+drSbgKJN2pYhKSQGrAcoiwaRmRvsxlNdkTxsn12Wg0xez0UH37AMgjdJvGW53iXNSxXxaes74wv0OFqed23Nbtk2rZXngdf9g/BiU7lCNIZgDCZT/HR0bVBtjqC3iFJcaLtDIZs5c+kWbKtdS+1K/Vd+QWm6xc3214BtwsWbFm9jPEHcgo71KJaYwKnhcjXbO/Y7ysC4+A0gRd5hSqZkIn7iRBvuHlZjzIUj/9x/QmW4+6GNervN admin@win10ltsc2"
   ];
   };
   networking.extraHosts = ''
@@ -112,6 +114,10 @@ in
     nvm
     codex
     curl
+    opencode
+    antigravity-cli
+    openssl
+    vault-bin
   ];
 
   virtualisation.podman = {
