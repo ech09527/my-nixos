@@ -115,7 +115,6 @@ in
     codex
     curl
     opencode
-    antigravity-cli
     openssl
     vault-bin
   ];
