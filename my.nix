@@ -21,7 +21,8 @@ let
   };
 in
 {
-
+   networking.nameservers = [ "192.168.31.68" ];
+   networking.firewall.enable = false;
    programs.nix-ld.enable = true;
    programs.nix-ld.libraries = with pkgs; [
         ];
@@ -44,10 +45,12 @@ in
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYam+IxrgQ48DBG0zJpBUhtDRr/h0xmiwRQW0AnDe1krT+JQv1iAd9HJIuo4eSBQeViifhtlMO6IRWNwKSFHnQs/ZUpycTHrim0cdkTE2KnIcl+LX8hVwVmx+iVJgSef94QwxeBSGpq+p6UZgOHQkMbOGvqC+yRxcNxhY+wU7+sixUq2HQc7+MFfnirFQvMbEZw0lEMHa/IcQWZwjgcRhgeuELFTVFO68DL1JkrW0g5oUGXIqOqj5zxW0yrSFGNcZaoeovwDNgJQjzGGZQM8KXFBGsvSOWmVcC1xbEamWitmqvcGsSVHgXRqpi6InKqM3TDrTJc5zJvj/f0NP9d41cilggtZlaRDtHO2KJ/aWb68DCi9B7yey1KiJMonMQClPdsUvB4F/M5hMoJNt0fB/CRsjRxHldx5wHejt2A51nMatXoxsakmSZk3B1+sjMjfp9gYrPn2NxZBxH/HsBKx36BdKQsyZw4FZp8KzAL2v38z621661PPaG6H1avpNxKEc="
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvTB/TkQgqfrUEIYdpgZd13icD4oHkkzXa4T23SPTgN8z542JfKyqoWf51juWg8+n08oN2lEoj3Mv/vvAcaoRvQ6/04/Pezs7JICf+0EkPI6KDRMjxsm+RFPn5p1wt2L+mtf2CW4jxaYyniiCGKM79SJZ9wM++BOVY8WTJAbHi0C45kwhfvA4X4dlS9Ukm1YcvHAMqyK1vowZ0AeA1pCFenqVThjpj/gdEWGXgxSyrd3HNlXpdbGctVPQYred53oUNzPyDo+d+LivBBvZ2IFyf+v+kG9qiz+Hr735JDkU99TGIRL2Xw6OU2dsDyKIAg8piR0qyDHvAdazpvWs+VWdp admin@win10ltsc"
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFGgkAcYZEIEK1qWBgiWY1nNdN2yEHuRV4Eb4qoJn4O5kaNjLCyK2891brP6emI9Ae9dWLZ1/RTAnn3+jG0PqRqPULIIlXNfA+drSbgKJN2pYhKSQGrAcoiwaRmRvsxlNdkTxsn12Wg0xez0UH37AMgjdJvGW53iXNSxXxaes74wv0OFqed23Nbtk2rZXngdf9g/BiU7lCNIZgDCZT/HR0bVBtjqC3iFJcaLtDIZs5c+kWbKtdS+1K/Vd+QWm6xc3214BtwsWbFm9jPEHcgo71KJaYwKnhcjXbO/Y7ysC4+A0gRd5hSqZkIn7iRBvuHlZjzIUj/9x/QmW4+6GNervN admin@win10ltsc2"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL+sFmn5Yt5cbpltrLCU5gQD36xNWZZ9L5Pm7JQk4sHd hermes-agent@devteam"
   ];
   };
   networking.extraHosts = ''
     100.78.7.4 redpanda-0
+    127.0.0.1 nkjs-register
   '';
   virtualisation.docker.enable = true;
 
@@ -85,6 +88,7 @@ in
   '';
 
   environment.etc."bashrc.local".text = ''
+    set -h
     export NVM_DIR="/root/.nvm"
     export NVM_NODEJS_ORG_MIRROR="https://npmmirror.com/mirrors/node"
     if [ -s "${nvm}/share/nvm/nvm.sh" ]; then
@@ -99,6 +103,10 @@ in
     "d /root/.nvm 0755 root root -"
   ];
 
+  environment.sessionVariables = {
+    GOPROXY = "https://goproxy.cn,direct";
+  };
+
   # 1. 安装 Vim 软件包
   environment.systemPackages = with pkgs; [
     vim
@@ -108,21 +116,31 @@ in
     gh
     docker-compose
     restic
-    cursor-cli
+    # cursor-cli
     tea
     uv
-    nvm
     codex
     curl
     opencode
     openssl
     vault-bin
+    gnumake
+    chromium
+    zip
+    gemini-cli
+    python3
+    go
+    jq
+    bun
   ];
-
+  programs.mosh.enable = true;
   virtualisation.podman = {
     enable = false;
     defaultNetwork.settings.dns_enabled = true;
   };
+  environment.shellInit = ''
+    set -h
+  '';
   environment.etc."containers/registries.conf".text = lib.mkForce ''
     unqualified-search-registries = ["docker.io"]
 
